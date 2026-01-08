@@ -1,0 +1,25 @@
+{{- if eq .Pipeline.Status "ok" -}}
+  {{- $commitHash := slice .Commit.Hash 0 8 -}}
+  {{- printf "Your pipeline #%d passed!\n    Project:      %s/%s\n    Branch:       🌿 %s\n    Commit:       %s %s\n    CommitAuthor: %s"
+   .Pipeline.ID
+   .Project.GroupID
+   .Project.ID
+   .Branch
+   $commitHash
+   .Commit.Message
+   .Commit.Author -}}
+{{- else -}}
+  {{- $commitHash := slice .Commit.Hash 0 8 -}}
+  {{- printf "Your pipeline #%d has failed!\n    Project:      %s/%s\n    Branch:       🌿 %s\n    Commit:       %s %s\n    CommitAuthor: %s"
+   .Pipeline.ID
+   .Project.GroupID
+   .Project.ID
+   .Branch
+   $commitHash
+   .Commit.Message
+   .Commit.Author -}}
+  {{- range $index, $element := .Pipeline.FailedJobs -}}
+    {{- printf "\n        Stage: %s, Job %s\n" $element.Stage $element.Name -}}
+    {{- printf "            %s\n" (suffix $element) -}}
+  {{- end -}}
+{{- end -}}
